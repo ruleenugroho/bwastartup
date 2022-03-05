@@ -27,11 +27,38 @@ func main() {
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
 
+	//userByEmail, err := userRepository.FindByEmail("rully@gmail.com")
+	//if err != nil {
+	//	fmt.Println(err.Error())
+	//}
+	//if userByEmail.ID == 0 {
+	//	fmt.Println("User tidak ditemukan")
+
+	//} else {
+	//	fmt.Println(userByEmail.Name)
+	//}
+	//input := user.LoginInput{
+	//	Email:    "nugroho@domain.com",
+	//	Password: "qwe123",
+	//}
+
+	//user, err := userService.Login(input)
+	//if err != nil {
+	//	fmt.Println("Terjadi kesalahan")
+	//	fmt.Println(err.Error())
+	//}
+
+	//fmt.Println(user.Email)
+	//fmt.Println(user.Name)
+
 	userHandler := handler.NewUserHandler(userService)
 
 	router := gin.Default()
 	api := router.Group("/api/v1")
+
 	api.POST("/users", userHandler.RegisterUser)
+	api.POST("/sessions", userHandler.Login)
+
 	router.Run()
 
 	//fmt.Println("Connection to database is safe")
