@@ -27,13 +27,13 @@ func (s *service) RegisterUser(input RegisterUserInput) (User, error) {
 	user.Occupation = input.Occupation
 	user.Email = input.Email
 
-	user, err := s.repository.FindByEmail(input.Email)
+	userCheck, err := s.repository.FindByEmail(input.Email)
 	if err != nil {
-		return user, err
+		return userCheck, err
 	}
 
-	if user.ID != 0 {
-		return user, errors.New("User already registered")
+	if userCheck.ID != 0 {
+		return userCheck, errors.New("User already registered")
 	}
 
 	PasswordHash, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.MinCost)
