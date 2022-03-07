@@ -29,6 +29,17 @@ func main() {
 	userService := user.NewService(userRepository)
 	authService := auth.NewService()
 
+	//token, err := authService.ValidateToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyfQ.lchslLcaVh4VKxjqEmUGid1VAVMbxtK4XrOuHNGyXNo")
+	//if err != nil {
+	//	fmt.Println("ERROR")
+	//}
+
+	//if token.Valid {
+	//	fmt.Println("VALID")
+	//} else {
+	//	fmt.Println("INVALID")
+	//}
+
 	//userByEmail, err := userRepository.FindByEmail("rully@gmail.com")
 	//if err != nil {
 	//	fmt.Println(err.Error())
