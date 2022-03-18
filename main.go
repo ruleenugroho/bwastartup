@@ -7,6 +7,7 @@ import (
 	"startup/campaign"
 	"startup/handler"
 	"startup/helper"
+	"startup/payment"
 	"startup/transaction"
 	"startup/user"
 	"strings"
@@ -38,8 +39,18 @@ func main() {
 
 	userService := user.NewService(userRepository)
 	campaignService := campaign.NewService(campaignRepository)
+	paymentService := payment.NewService()
+	transactionService := transaction.NewService(transactionRepository, campaignRepository, paymentService)
 	authService := auth.NewService()
-	transactionService := transaction.NewService(transactionRepository, campaignRepository)
+	user, _ := userService.GetUserByID(6)
+
+	input := transaction.CreateTransactionInput{
+		CampaignID: 3,
+		Amount:     5000000,
+		User:       user,
+	}
+
+	transactionService.CreateTransaction(input)
 
 	userHandler := handler.NewUserHandler(userService, authService)
 	campaignHandler := handler.NewCampaignHandler(campaignService)
@@ -63,6 +74,7 @@ func main() {
 
 	api.GET("/campaign/:id/transactions", authMiddleware(authService, userService), transactionHandler.GetCampaignTransactions)
 	api.GET("/transactions", authMiddleware(authService, userService), transactionHandler.GetUserTransactions)
+	api.POST("/transactions", authMiddleware(authService, userService), transactionHandler.CreateTransaction)
 
 	router.Run()
 }
