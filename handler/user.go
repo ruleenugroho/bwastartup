@@ -3,9 +3,9 @@ package handler
 import (
 	"fmt"
 	"net/http"
-	"startup/auth"
 	"startup/helper"
-	"startup/user"
+	"startup/modules/auth"
+	"startup/modules/user"
 
 	"github.com/gin-gonic/gin"
 )

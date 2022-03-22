@@ -2,8 +2,8 @@ package transaction
 
 import (
 	"errors"
-	"startup/campaign"
-	"startup/payment"
+	"startup/modules/campaign"
+	"startup/modules/payment"
 	"strconv"
 )
 
@@ -52,6 +52,11 @@ func (s *service) GetTransactionByUserID(userID int) ([]Transaction, error) {
 }
 
 func (s *service) CreateTransaction(input CreateTransactionInput) (Transaction, error) {
+	campaign, _ := s.campaignRepository.FindByID(input.CampaignID)
+	if campaign.ID == 0 {
+		return Transaction{}, errors.New("No campaign found")
+	}
+
 	transaction := Transaction{}
 	transaction.CampaignID = input.CampaignID
 	transaction.Amount = input.Amount

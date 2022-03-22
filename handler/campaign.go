@@ -3,9 +3,9 @@ package handler
 import (
 	"fmt"
 	"net/http"
-	"startup/campaign"
 	"startup/helper"
-	"startup/user"
+	"startup/modules/campaign"
+	"startup/modules/user"
 	"strconv"
 
 	"github.com/gin-gonic/gin"

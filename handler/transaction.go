@@ -3,8 +3,8 @@ package handler
 import (
 	"net/http"
 	"startup/helper"
-	"startup/transaction"
-	"startup/user"
+	"startup/modules/transaction"
+	"startup/modules/user"
 
 	"github.com/gin-gonic/gin"
 )

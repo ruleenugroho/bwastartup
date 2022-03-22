@@ -1,7 +1,7 @@
 package campaign
 
 import (
-	"startup/user"
+	"startup/modules/user"
 	"time"
 )
 

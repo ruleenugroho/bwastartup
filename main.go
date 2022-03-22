@@ -2,14 +2,14 @@ package main
 
 import (
 	"net/http"
-	"startup/auth"
-	"startup/campaign"
 	"startup/config"
 	"startup/handler"
 	"startup/helper"
-	"startup/payment"
-	"startup/transaction"
-	"startup/user"
+	"startup/modules/auth"
+	"startup/modules/campaign"
+	"startup/modules/payment"
+	"startup/modules/transaction"
+	"startup/modules/user"
 	"strings"
 
 	jwt "github.com/dgrijalva/jwt-go"
@@ -22,6 +22,12 @@ func main() {
 	var db *gorm.DB = config.SetupKoneksi()
 	defer config.CloseKoneksiDatabase(db)
 
+	//	//Sistem Layering
+	//	//- input dari user
+	//	//- Handler mapping input dari user ke struct input
+	//	//- Service mapping struct input ke struct User
+	//	//- Repository save struct User ke db
+	//	//- db
 	authservice := auth.NewService()
 
 	userRepository := user.NewRepository(db)       //berhubungan dengan db
@@ -47,9 +53,9 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"ok": "ok"})
 	})
 
-	api.POST("/users", userHandler.RegisterUser)              //pendaftaran pengguna
-	api.POST("/sessions", userHandler.Login)                  //login
-	api.POST("/emailcek", userHandler.CheckEmailAvailability) //cek apakah email sudah ada atau belum
+	api.POST("/users", userHandler.RegisterUser)                    //pendaftaran pengguna
+	api.POST("/sessions", userHandler.Login)                        //login
+	api.POST("/email_checkers", userHandler.CheckEmailAvailability) //cek apakah email sudah ada atau belum
 	api.POST("/avatars", authMiddleware(authservice, userService), userHandler.UploadAvatar)
 	api.GET("/users/fetch", authMiddleware(authservice, userService), userHandler.FetchUser)
 
@@ -90,28 +96,31 @@ func authMiddleware(authService auth.Service, userService user.Service) gin.Hand
 		authHeader := c.GetHeader("Authorization") //authorization: bearer token
 		if !strings.Contains(authHeader, "Bearer") {
 			response := helper.APIResponse("Unathorization", http.StatusUnauthorized, "error", nil)
-			c.AbortWithStatusJSON(http.StatusUnauthorized, response) //kalau error maka proses akan diberhentikan
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
 		}
 
-		//nilainya kan bearer tokentoken, nah dipisahkan dengan spasi
 		tokenString := ""
 		arrayToken := strings.Split(authHeader, " ")
 
 		if len(arrayToken) == 2 {
 			tokenString = arrayToken[1]
+		} else {
+			response := helper.APIResponse("Unathorization", http.StatusUnauthorized, "error", nil)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
+			return
 		}
 
 		token, err := authService.ValidateToken(tokenString)
 		if err != nil {
 			response := helper.APIResponse("Unathorization", http.StatusUnauthorized, "error", nil)
-			c.AbortWithStatusJSON(http.StatusUnauthorized, response) //kalau error maka proses akan diberhentikan
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
 		}
 		claim, ok := token.Claims.(jwt.MapClaims)
 		if !ok || !token.Valid {
 			response := helper.APIResponse("Unathorization", http.StatusUnauthorized, "error", nil)
-			c.AbortWithStatusJSON(http.StatusUnauthorized, response) //kalau error maka proses akan diberhentikan
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
 		}
 
@@ -119,7 +128,7 @@ func authMiddleware(authService auth.Service, userService user.Service) gin.Hand
 		user, err := userService.GetUserByID(userID)
 		if err != nil {
 			response := helper.APIResponse("Unathorization", http.StatusUnauthorized, "error", nil)
-			c.AbortWithStatusJSON(http.StatusUnauthorized, response) //kalau error maka proses akan diberhentikan
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
 		}
 		c.Set("currentUser", user)

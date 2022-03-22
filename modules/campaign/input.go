@@ -1,6 +1,6 @@
 package campaign
 
-import "startup/user"
+import "startup/modules/user"
 
 type GetCampaignDetailInput struct {
 	ID int `uri:"id" binding:"required"`
