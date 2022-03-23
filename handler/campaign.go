@@ -86,7 +86,7 @@ func (h *CampaignHandler) UpdateCampaign(c *gin.Context) {
 
 	err := c.ShouldBindUri(&inputID)
 	if err != nil {
-		response := helper.APIResponse("Failed to update campaign", http.StatusBadRequest, "error", nil)
+		response := helper.APIResponse("Failed to update campaign1", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -98,7 +98,7 @@ func (h *CampaignHandler) UpdateCampaign(c *gin.Context) {
 		errors := helper.FormatValidationError(err)
 		errorMessage := gin.H{"errors": errors}
 
-		response := helper.APIResponse("Failed to update campaign", http.StatusUnprocessableEntity, "error", errorMessage)
+		response := helper.APIResponse("Failed to update campaign2", http.StatusUnprocessableEntity, "error", errorMessage)
 		c.JSON(http.StatusUnprocessableEntity, response)
 		return
 	}
@@ -107,7 +107,7 @@ func (h *CampaignHandler) UpdateCampaign(c *gin.Context) {
 	inputData.User = currentUser
 	updateCampaign, err := h.Service.UpdateCampaign(inputID, inputData)
 	if err != nil {
-		response := helper.APIResponse("Failed to update campaign", http.StatusBadRequest, "error", nil)
+		response := helper.APIResponse("Failed to update campaign3", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
