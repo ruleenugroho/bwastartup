@@ -18,7 +18,7 @@ import (
 )
 
 func main() {
-
+	//test
 	var db *gorm.DB = config.SetupKoneksi()
 	defer config.CloseKoneksiDatabase(db)
 
