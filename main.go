@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"os"
 	"startup/config"
 	"startup/handler"
 	"startup/helper"
@@ -70,7 +71,8 @@ func main() {
 	api.POST("/transactions", authMiddleware(authservice, userService), transactionHandler.CreateTransaction)
 	api.POST("/transactions/notification", transactionHandler.GetNotification)
 
-	router.Run()
+	port := os.Getenv("PORT")
+	router.Run(":" + port)
 }
 
 func CORSMiddleware() gin.HandlerFunc {
